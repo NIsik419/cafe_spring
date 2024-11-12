@@ -27,8 +27,9 @@ public class CafeServiceImpl implements CafeService {
     public List<Cafe> searchCafesByFilters(String name, Boolean wifi, Boolean petFriendly, Boolean takeout,
                                            Boolean groupFriendly, Boolean parking, Boolean easyPayment,
                                            Boolean delivery, List<String> keywords) {
-        long keywordCount = (keywords != null) ? keywords.size() : 0;
-        return cafeRepository.findByFiltersWithKeywordPriority(name, wifi, petFriendly, takeout,
-                groupFriendly, parking, easyPayment, delivery, keywords, keywordCount);
+        return cafeRepository.findByFiltersWithKeywordPriority(
+                name, wifi, petFriendly, takeout, groupFriendly, parking, easyPayment, delivery, keywords);
     }
+
+
 }

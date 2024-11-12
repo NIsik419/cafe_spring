@@ -11,7 +11,7 @@ public interface CafeRepository extends JpaRepository<Cafe, String> {
 
     @Query("SELECT c FROM Cafe c " +
             "LEFT JOIN c.keywords ck " +
-            "WHERE (:name IS NULL OR c.name LIKE %:name%) " +
+            "WHERE (:name IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :name, '%'))) " + // name 검색 수정
             "AND (:wifi IS NULL OR c.wifi = :wifi) " +
             "AND (:petFriendly IS NULL OR c.petFriendly = :petFriendly) " +
             "AND (:takeout IS NULL OR c.takeout = :takeout) " +
@@ -21,17 +21,17 @@ public interface CafeRepository extends JpaRepository<Cafe, String> {
             "AND (:delivery IS NULL OR c.delivery = :delivery) " +
             "AND (:keywords IS NULL OR ck.keyword IN :keywords) " +
             "GROUP BY c " +
-            "HAVING COUNT(DISTINCT ck.keyword) = :keywordCount " + // 선택된 모든 키워드를 포함하는 카페 필터링
             "ORDER BY SUM(CASE WHEN ck.keyword IN :keywords THEN ck.frequency ELSE 0 END) DESC")
-    List<Cafe> findByFiltersWithKeywordPriority(@Param("name") String name,
-                                                @Param("wifi") Boolean wifi,
-                                                @Param("petFriendly") Boolean petFriendly,
-                                                @Param("takeout") Boolean takeout,
-                                                @Param("groupFriendly") Boolean groupFriendly,
-                                                @Param("parking") Boolean parking,
-                                                @Param("easyPayment") Boolean easyPayment,
-                                                @Param("delivery") Boolean delivery,
-                                                @Param("keywords") List<String> keywords,
-                                                @Param("keywordCount") long keywordCount);
+    List<Cafe> findByFiltersWithKeywordPriority(
+            @Param("name") String name,
+            @Param("wifi") Boolean wifi,
+            @Param("petFriendly") Boolean petFriendly,
+            @Param("takeout") Boolean takeout,
+            @Param("groupFriendly") Boolean groupFriendly,
+            @Param("parking") Boolean parking,
+            @Param("easyPayment") Boolean easyPayment,
+            @Param("delivery") Boolean delivery,
+            @Param("keywords") List<String> keywords);
+
 
 }
